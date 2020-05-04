@@ -5,16 +5,21 @@
       <div class="content-left">
         <div class="item-common data-day1" id="myChart1"></div>
         <div class="item-common data-day2" id="myChart2"></div>
+        <div class="two"></div>
+
         <!-- <div class="item-common data-month"></div>
         <div class="item-common data-year"></div>-->
       </div>
-      <!-- <div class='content-center'>
-          <div class='item-common data-preview'></div>
-          <div class='item-common data-pic'></div>
-          <div class='item-common data-rank'></div>
-      </div>-->
       <div class="content-right">
-        <div class="item-common data-day3" id="myChart3"></div>
+        <!-- <div class="item-common data-box"> -->
+        <!-- <div class="item-common one"></div>
+        <div class="two"></div>-->
+        <!-- </div> -->
+        <div class="item-common2 data-day3">
+          <div class="one" id="myChart3"></div>
+          <div class="two" id="right"></div>
+        </div>
+
         <div class="item-common data-day4" id="myChart4"></div>
         <!-- <div class="item-common data-water"></div>
         <div class="item-common data-electric"></div>-->
@@ -363,11 +368,17 @@ export default {
   }
   .content {
     display: flex;
+    flex-direction: row;
     margin: 10px;
     .item-common {
       margin-bottom: 40px;
       margin-top: 15px;
       border: 1px solid #24365e;
+    }
+    .item-common2 {
+      margin-bottom: 40px;
+      margin-top: 15px;
+      // border: 1px solid #24365e;
     }
     .content-left {
       margin-left: 20px;
@@ -397,13 +408,34 @@ export default {
     }
     .content-right {
       flex: 1;
+      // flex-direction: row;
       margin-right: 15px;
       margin-left: 50px;
       .data-day3 {
+        flex: 1;
+        flex-direction: row;
         height: 396px;
+        // overflow: auto;
+
+        .one {
+          display: inline-flex;
+          flex: 1;
+          margin-right: 30px;
+          height: 396px;
+          width: 470px;
+          border: 1px solid #24365e;
+        }
+        .two {
+          display: inline-flex;
+          flex: 1;
+          height: 396px;
+          width: 460px;
+          border: 1px solid #24365e;
+        }
       }
       .data-day4 {
         height: 396px;
+        border: 1px solid #24365e;
       }
     }
   }

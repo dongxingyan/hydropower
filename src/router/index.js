@@ -16,7 +16,7 @@ export default new Router({
             component: energyConsumption
         },
         {
-            path: '/',
+            path: '/economize',
             name: 'economize',
             meta: {
                 title: '节能数据'

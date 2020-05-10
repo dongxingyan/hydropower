@@ -5,24 +5,28 @@
       <div class="content-left">
         <div class="item-common data-day1" id="myChart1"></div>
         <div class="item-common data-day2" id="myChart2"></div>
-        <div class="two"></div>
+        <!-- <div class="two">
+          <span class="item-tittle">111111111</span>
+        </div>-->
 
         <!-- <div class="item-common data-month"></div>
         <div class="item-common data-year"></div>-->
       </div>
       <div class="content-right">
-        <!-- <div class="item-common data-box"> -->
-        <!-- <div class="item-common one"></div>
-        <div class="two"></div>-->
-        <!-- </div> -->
         <div class="item-common2 data-day3">
           <div class="one" id="myChart3"></div>
-          <div class="two" id="right"></div>
+          <div class="two" id="right">
+            <div class="item-header">
+              <img class="mark-icon" src="../../assets/img/mark_icon.png" />
+              <div class="item-title">站点数</div>
+            </div>
+            <div class="item-foot">
+              <p class="item-txt">2020年站点个数：123341</p>
+              <p class="item-txt yellow">2019年站点个数：545456</p>
+            </div>
+          </div>
         </div>
-
         <div class="item-common data-day4" id="myChart4"></div>
-        <!-- <div class="item-common data-water"></div>
-        <div class="item-common data-electric"></div>-->
       </div>
     </div>
   </div>
@@ -371,12 +375,12 @@ export default {
     flex-direction: row;
     margin: 10px;
     .item-common {
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       margin-top: 15px;
       border: 1px solid #24365e;
     }
     .item-common2 {
-      margin-bottom: 40px;
+      margin-bottom: 18px;
       margin-top: 15px;
       // border: 1px solid #24365e;
     }
@@ -412,25 +416,71 @@ export default {
       margin-right: 15px;
       margin-left: 50px;
       .data-day3 {
+        display: inline-flex;
         flex: 1;
         flex-direction: row;
         height: 396px;
         // overflow: auto;
-
         .one {
-          display: inline-flex;
           flex: 1;
           margin-right: 30px;
           height: 396px;
-          width: 470px;
+          width: 460px;
           border: 1px solid #24365e;
+          .mark-icon {
+            width: 20px;
+            height: 20px;
+            // margin-right: 10px;
+          }
         }
         .two {
+          background: url("../../assets/img/building.png") center center
+            no-repeat;
           display: inline-flex;
-          flex: 1;
+          // flex: 1;
+          flex-direction: column;
+          justify-content: space-between;
+          background-size: 65%;
           height: 396px;
           width: 460px;
           border: 1px solid #24365e;
+          padding: 25px;
+          .item-header {
+            display: flex;
+            align-items: space-between;
+            .mark-icon {
+              width: 20px;
+              height: 20px;
+              margin-right: 10px;
+            }
+            .item-title {
+              font-size: 14px;
+              font-weight: bold;
+              color: #6c7db1;
+            }
+          }
+          .item-foot {
+            margin-bottom: -10px;
+            // position: fixed;
+            bottom: 1px;
+            // align-items: space-between;
+            .item-txt {
+              font-size: 14px;
+              font-weight: bold;
+              color: #6c7db1;
+              margin-bottom: 3px;
+            }
+            .yellow {
+              color: #abc959;
+            }
+          }
+        }
+        .data-item {
+          margin-bottom: 30px;
+          .item-title {
+            font-size: 14px;
+            color: #fff;
+          }
         }
       }
       .data-day4 {

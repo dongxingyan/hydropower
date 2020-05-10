@@ -6,9 +6,12 @@ import router from './router';
 import './assets/css/common.less';
 import echarts from 'echarts';
 
+import socket from './api/websocket';
+
 Vue.prototype.$echarts = echarts;
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false; ;
+Vue.prototype.socket = socket;
 
 /* eslint-disable no-new */
 new Vue({

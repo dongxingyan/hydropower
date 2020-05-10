@@ -97,11 +97,29 @@ export default {
             msg: 'this is energy-consumption page'
         };
     },
+    created() {
+        this.socket.initWebSocket('ws://139.196.13.211:6900', (data) => {
+            console.log('data=====', data);
+        });
+
+        this.websocketsend();
+    },
     mounted() {
         // this.loadingrosepie('dayChart'); // 执行下面的函数
         this.loadingbar('dayChart');
     },
     methods: {
+        websocketsend() { // 数据发送
+            let username = 'guest';
+            let password = 'c2f1366c51911b52369fe27df307ff84';
+            let params = {
+                'username': username,
+                'password': password,
+                'itype': 0,
+                'iname': 'summary'
+            };
+            this.socket.sendSock(params);
+        },
         loadingbar(id, url) {
             var myChart = this.$echarts.init(document.getElementById(id));
             myChart.setOption({
@@ -250,6 +268,9 @@ export default {
                 ]
             });
         }
+    },
+    destroyed() {
+        this.socket.websocketclose();
     }
 };
 </script>

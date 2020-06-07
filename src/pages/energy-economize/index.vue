@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import md5 from "blueimp-md5";
 export default {
   name: "index",
   data() {
@@ -43,7 +44,26 @@ export default {
     this.loadingbar("myChart4");
     this.loadingbar("myChart2");
   },
+  created() {
+    this.socket.initWebSocket("ws://139.196.13.211:6900", data => {
+      console.log("data=====", data);
+    });
+
+    this.websocketsend();
+  },
   methods: {
+    websocketsend() {
+      // 数据发送
+      let username = "guest";
+      let password = "c2f1366c51911b52369fe27df307ff84";
+      let params = {
+        username: username,
+        password: password,
+        itype: 0,
+        iname: "groupList"
+      };
+      this.socket.sendSock(params);
+    },
     loadingrosepie(id, url) {
       var myChart = this.$echarts.init(document.getElementById(id));
       myChart.setOption({
@@ -350,6 +370,9 @@ export default {
       //   });
       // });
     }
+  },
+  destroyed() {
+    this.socket.websocketclose();
   }
 };
 </script>

@@ -20,17 +20,19 @@
           </div>
           <div class="charts-common" id="weekChart"></div>
         </div>
-        <div class="item-common data-month" id="monthChart">
+        <div class="item-common data-month">
           <div class="item-header">
             <img class="mark-icon" src="../../assets/img/mark_icon.png" />
             <div class="item-title">月能耗数据</div>
           </div>
+          <div class="charts-common" id="monthChart"></div>
         </div>
-        <div class="item-common data-year" id="yearChart">
+        <div class="item-common data-year">
           <div class="item-header">
             <img class="mark-icon" src="../../assets/img/mark_icon.png" />
             <div class="item-title">年能耗数据</div>
           </div>
+          <div class="charts-common" id="yearChart"></div>
         </div>
       </div>
       <div class="content-center">
@@ -91,37 +93,42 @@
             </div>
           </div>
         </div>
-        <div class="item-common data-rank" id="midBottom">
+        <div class="item-common data-rank">
           <div class="item-header">
             <img class="mark-icon" src="../../assets/img/mark_icon.png" />
             <div class="item-title">能耗排名</div>
           </div>
+          <div class="charts-common" id="midBottom"></div>
         </div>
       </div>
       <div class="content-right">
-        <div class="item-common data-complete" id>
+        <div class="item-common data-complete">
           <div class="item-header">
             <img class="mark-icon" src="../../assets/img/mark_icon.png" />
             <div class="item-title">节能完成图</div>
           </div>
+          <div class="charts-common" id="right1"></div>
         </div>
         <div class="item-common data-forecast">
           <div class="item-header">
             <img class="mark-icon" src="../../assets/img/mark_icon.png" />
-            <div class="item-title">能耗排名曲线</div>
+            <div class="item-title">折线</div>
           </div>
+          <div class="charts-common" id="right2"></div>
         </div>
         <div class="item-common data-water">
           <div class="item-header">
             <img class="mark-icon" src="../../assets/img/mark_icon.png" />
             <div class="item-title">能耗排名（横向柱状图）</div>
           </div>
+          <div class="charts-common" id="right3"></div>
         </div>
         <div class="item-common data-electric">
           <div class="item-header">
             <img class="mark-icon" src="../../assets/img/mark_icon.png" />
             <div class="item-title">能耗排名（横向柱状图）</div>
           </div>
+          <div class="charts-common" id="right4"></div>
         </div>
       </div>
     </div>
@@ -152,6 +159,10 @@ export default {
     this.loadingbar("monthChart");
     this.loadingbar("yearChart");
     this.loadingbar("midBottom");
+    this.loadingbarRow("right3");
+    this.loadingbarRow("right4");
+    this.loadingPie("right1");
+    this.loadingZheX("right2");
   },
   methods: {
     websocketsend() {
@@ -171,14 +182,133 @@ export default {
     },
     loadingbar(id, url) {
       var myChart = this.$echarts.init(document.getElementById(id));
+      myChart.setOption(
+        {
+          title: {
+            // text: '订单供应数量柱状图',
+            // x: '60',
+            textStyle: {
+              color: "#3496f9",
+              fontWeight: "normal"
+            }
+          },
+          tooltip: {
+            trigger: "axis",
+            axisPointer: {
+              type: "cross",
+              crossStyle: {
+                color: "#999"
+              }
+            }
+          },
+          toolbox: {
+            feature: {
+              dataView: {
+                show: true,
+                readOnly: false
+              },
+              magicType: {
+                show: true,
+                type: ["line", "bar"]
+              },
+              restore: {
+                show: true
+              },
+              saveAsImage: {
+                show: true
+              }
+            }
+          },
+          color: ["blue", "yellow", "#3496f9"],
+          legend: {
+            data: ["订单量", "订单量1", "平均订单量"],
+            // y:275,
+            textStyle: {
+              color: "#6c7db1" // legend字体颜色
+            }
+          },
+          xAxis: [
+            {
+              type: "category",
+              data: ["1月", "2月", "3月", "4月", "5月", "6月"],
+              axisPointer: {
+                type: "shadow"
+              },
+              axisLabel: {
+                show: true,
+                interval: 0,
+                textStyle: {
+                  color: "#3496f9",
+                  fontSize: "12"
+                }
+              }
+            }
+          ],
+          yAxis: [
+            {
+              type: "value",
+              name: "能耗量",
+              min: 0,
+              // max: 250,
+              interval: 50,
+              axisLabel: {
+                show: true,
+                formatter: "{value} ",
+                textStyle: {
+                  color: "#3496f9"
+                }
+              }
+            },
+            {
+              type: "value",
+              name: "周水量",
+              min: 0,
+              // max: 25,
+              interval: 5,
+              axisLabel: {
+                // formatter: "{value} ",
+                textStyle: {
+                  color: "blue"
+                }
+              }
+            }
+          ],
+          series: [
+            {
+              name: "订单量",
+              type: "bar",
+              data: [2.0, 4.9, 7.0, 3.2, 5.6, 6.7]
+            },
+            {
+              name: "订单量1",
+              type: "bar",
+              data: [2.6, 5.9, 9.0, 6.4, 8.7, 7]
+            },
+            {
+              name: "平均订单量",
+              type: "line",
+              yAxisIndex: 1,
+              data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2]
+            }
+          ]
+        },
+        true
+      );
+    },
+    loadingbarRow(id, url) {
+      var myChart = this.$echarts.init(document.getElementById(id));
       myChart.setOption({
         title: {
-          // text: '订单供应数量柱状图',
-          // x: '60',
           textStyle: {
             color: "#3496f9",
             fontWeight: "normal"
           }
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true
         },
         tooltip: {
           trigger: "axis",
@@ -189,140 +319,185 @@ export default {
             }
           }
         },
-        toolbox: {
-          feature: {
-            dataView: {
-              show: true,
-              readOnly: false
-            },
-            magicType: {
-              show: true,
-              type: ["line", "bar"]
-            },
-            restore: {
-              show: true
-            },
-            saveAsImage: {
-              show: true
-            }
-          }
-        },
-        color: ["blue", "yellow", "#3496f9"],
         legend: {
-          data: ["订单量", "订单量1", "平均订单量"],
-          // y:275,
+          data: ["2011年"],
           textStyle: {
             color: "#6c7db1" // legend字体颜色
           }
         },
-        xAxis: [
-          {
-            type: "category",
-            data: [
-              "京东自营",
-              "寰宇优行",
-              "不夜城",
-              "IGOLA",
-              "云商国际",
-              "海纳惠捷"
-            ],
-            axisPointer: {
-              type: "shadow"
-            },
-            axisLabel: {
-              show: true,
-              interval: 0,
-              textStyle: {
-                color: "#3496f9",
-                fontSize: "12"
-              }
+        yAxis: {
+          type: "category",
+          data: ["未命名", "未命名", "未命名", "未命名"],
+          axisLabel: {
+            show: true,
+            interval: 0,
+            textStyle: {
+              color: "#FFF",
+              fontSize: "12"
             }
           }
-        ],
-        yAxis: [
-          {
-            type: "value",
-            name: "能耗量",
-            min: 0,
-            // max: 250,
-            interval: 50,
-            axisLabel: {
-              show: true,
-              formatter: "{value} ",
-              textStyle: {
-                color: "#3496f9"
-              }
-            }
-          },
-          {
-            type: "value",
-            name: "周水量",
-            min: 0,
-            // max: 25,
-            interval: 5,
-            axisLabel: {
-              // formatter: "{value} ",
-              textStyle: {
-                color: "blue"
-              }
+        },
+        xAxis: {
+          type: "value",
+          boundaryGap: [0, 0.01],
+          axisLabel: {
+            show: true,
+            interval: 0,
+            textStyle: {
+              color: "#3496f9",
+              fontSize: "12"
             }
           }
-        ],
+        },
         series: [
           {
-            name: "订单量",
+            name: "2011年",
             type: "bar",
-            data: [2.0, 4.9, 7.0, 3.2, 5.6, 6.7]
-            // itemStyle: {
-            //   normal: {
-            //     //这里是重点
-            //     color: function(params) {
-            //       //注意，如果颜色太少的话，后面颜色不会自动循环，最好多定义几个颜色
-            //       var colorList = [
-            //         "blue",
-            //         "blue",
-            //         "blue",
-            //         "blue",
-            //         "blue",
-            //         "blue"
-            //       ];
-            //       return colorList[params.dataIndex];
-            //     }
-            //   }
-            // }
-          },
+            data: [18203, 23489, 29034, 29034],
+            itemStyle: {
+              normal: {
+                //这里是重点
+                color: function(params) {
+                  //注意，如果颜色太少的话，后面颜色不会自动循环，最好多定义几个颜色
+                  var colorList = ["skyBlue", "pink", "lightgreen", "orange"];
+                  return colorList[params.dataIndex];
+                }
+              }
+            }
+          }
+        ]
+      });
+    },
+    loadingZheX(id, url) {
+      var myChart = this.$echarts.init(document.getElementById(id));
+      myChart.setOption({
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true
+        },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross",
+            crossStyle: {
+              color: "#999"
+            }
+          }
+        },
+        xAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          axisLabel: {
+            show: true,
+            interval: 0,
+            textStyle: {
+              color: "#3496f9",
+              fontSize: "12"
+            }
+          }
+        },
+        yAxis: {
+          type: "value",
+          axisLabel: {
+            show: true,
+            interval: 0,
+            textStyle: {
+              color: "#3496f9",
+              fontSize: "12"
+            }
+          }
+        },
+        series: [
           {
-            name: "订单量1",
-            type: "bar",
-            data: [2.6, 5.9, 9.0, 6.4, 8.7, 7]
-            // itemStyle: {
-            //   normal: {
-            //     //这里是重点
-            //     color: function(params) {
-            //       //注意，如果颜色太少的话，后面颜色不会自动循环，最好多定义几个颜色
-            //       var colorList = [
-            //         "yellow",
-            //         "yellow",
-            //         "yellow",
-            //         "yellow",
-            //         "yellow",
-            //         "yellow"
-            //       ];
-            //       return colorList[params.dataIndex];
-            //     }
-            //   }
-            // }
-          },
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            type: "line"
+          }
+        ]
+      });
+    },
+    loadingPie(id, url) {
+      var myChart = this.$echarts.init(document.getElementById(id));
+      myChart.setOption({
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        // title: {
+        //   text: "XX节能",
+        //   x: "center",
+        //   y: "-6",
+        //   textStyle: {
+        //     color: "#ffffff",
+        //     fontWeight: "normal",
+        //     fontSize: "18"
+        //   }
+        // },
+        legend: {
+          orient: "vertical",
+          x: "20",
+          y: "40",
+          data: ["XX节能1", "XX节能2", "XX节能3"],
+          // padding: [40, 0, 0, -10],
+          textStyle: {
+            color: "#ffffff" //legend字体颜色
+          }
+        },
+        series: [
           {
-            name: "平均订单量",
-            type: "line",
-            yAxisIndex: 1,
-            data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2]
+            name: "访问来源",
+            type: "pie",
+            radius: ["50%", "70%"],
+            avoidLabelOverlap: false,
+            label: {
+              normal: {
+                show: false,
+                position: "center"
+              },
+              emphasis: {
+                show: true,
+                textStyle: {
+                  fontSize: "30",
+                  fontWeight: "bold"
+                }
+              }
+            },
+            labelLine: {
+              normal: {
+                show: false
+              }
+            },
+            data: [
+              {
+                value: 25,
+                name: "XX节能1"
+              },
+              {
+                value: 25,
+                name: "XX节能2"
+              },
+              {
+                value: 50,
+                name: "XX节能3"
+              }
+            ],
+            itemStyle: {
+              normal: {
+                //这里是重点
+                color: function(params) {
+                  //注意，如果颜色太少的话，后面颜色不会自动循环，最好多定义几个颜色
+                  var colorList = ["skyBlue", "#3496f9", "purple"];
+                  return colorList[params.dataIndex];
+                }
+              }
+            }
           }
         ]
       });
     }
   },
+
   destroyed() {
     this.socket.websocketclose();
   }

@@ -1,9 +1,10 @@
+import md5 from 'blueimp-md5';
 var websock = null;
 var globalCallback = null;
 var lockReconnect = false;// 避免重复连接
 
 /* 初始化weosocket */
-function initWebSocket(wsurl, callback) {
+function initWebSocket(wsurl = 'ws://139.196.13.211:6900', callback) {
     if (typeof (WebSocket) === 'undefined') {
         alert('您的浏览器不支持socket');
     } else {
@@ -43,6 +44,9 @@ function reconnect(wsurl, callback) {
 * 3.若未开启 ，则等待1s后重新调用
 * */
 function sendSock(agentData) {
+    console.warn(agentData);
+    agentData.username = 'guest';
+    agentData.password = md5(md5('123456'));
     if (websock.readyState === websock.CONNECTING) {
         setTimeout(() => {
             websock.send(JSON.stringify(agentData));
@@ -110,7 +114,7 @@ var heartCheck = {
     }
 };
 
-export default {
+export {
     initWebSocket,
     sendSock,
     websocketonmessage,

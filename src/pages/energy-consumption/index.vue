@@ -49,28 +49,28 @@
           <div class="data-item">
             <span class="item-title">站点总数</span>
             <div class="item-content">
-              <span class="item-count">2041</span>
+              <span class="item-count">{{this.stationSummary.stationCount}}</span>
               <span class="item-unit">个</span>
             </div>
           </div>
           <div class="data-item">
             <span class="item-title">在线</span>
             <div class="item-content">
-              <span class="item-count">2041</span>
+              <span class="item-count">{{stationSummary.onlineStation}}</span>
               <span class="item-unit">个</span>
             </div>
           </div>
           <div class="data-item">
             <span class="item-title">离线</span>
             <div class="item-content">
-              <span class="item-count">2041</span>
+              <span class="item-count">{{stationSummary.offlineStation}}</span>
               <span class="item-unit">个</span>
             </div>
           </div>
           <div class="data-item">
             <span class="item-title">故障</span>
             <div class="item-content">
-              <span class="item-count">2041</span>
+              <span class="item-count">{{stationSummary.faultStation}}</span>
               <span class="item-unit">个</span>
             </div>
           </div>
@@ -88,190 +88,308 @@
 </template>
 
 <script>
-import md5 from "blueimp-md5";
+import {initWebSocket, sendSock, websocketonmessage} from '../../api/websocket';
 export default {
-  name: "index",
-  data() {
-    return {
-      msg: "this is energy-consumption page"
-    };
-  },
-  created() {
-    this.socket.initWebSocket("ws://139.196.13.211:6900", data => {
-      console.log("data=====", data);
-    });
-
-    this.websocketsend();
-  },
-  mounted() {
-    // this.loadingrosepie('dayChart'); // 执行下面的函数
-    this.loadingbar("dayChart");
-  },
-  methods: {
-    websocketsend() {
-      // 数据发送
-      let username = "guest";
-      let password = "123456";
-      let params = {
-        username: username,
-        password: md5(md5(password)),
-        itype: 0,
-        iname: "groupList"
-      };
-      this.socket.sendSock(params);
+    name: 'index',
+    data() {
+        return {
+            msg: 'this is energy-consumption page',
+            summaryData: '',
+            stationSummary: ''
+        };
     },
-    loadingbar(id, url) {
-      var myChart = this.$echarts.init(document.getElementById(id));
-      myChart.setOption({
-        title: {
-          // text: '订单供应数量柱状图',
-          // x: '60',
-          textStyle: {
-            color: "#ffffff",
-            fontWeight: "normal"
-          }
+    created() {
+        initWebSocket('ws://139.196.13.211:6900', (res) => {
+            res = JSON.parse(res);
+            if (res.code === 0 && res.data) {
+                switch (res.id) {
+                case 'groupList':
+                    this.summaryData = res.data;
+                    break;
+                case 'groupStationList':
+                    this.summaryData = res.data;
+                    break;
+                case 'summay':
+                    // 返回数据单位为吨与kw
+                    this.summaryData = res.data;
+                    break;
+                case 'threeDaysTrend':
+                    this.summaryData = res.data;
+                    break;
+                case 'weekTrend':
+                    this.summaryData = res.data;
+                    break;
+                case 'monthTrend':
+                    this.summaryData = res.data;
+                    break;
+                case 'halfYearTrend':
+                    this.summaryData = res.data;
+                    break;
+                case 'stationSummary':
+                    this.stationSummary = res.data;
+                    console.log('chart接口联调测试 · 语雀 v2.pdf====', this.stationSummary);
+                    break;
+                case 'usageRank':
+                    this.summaryData = res.data;
+                    break;
+                case 'WatermeterUsageRank':
+                    this.summaryData = res.data;
+                    break;
+                case 'ammeterUsageRank':
+                    this.summaryData = res.data;
+                    break;
+                case 'wtmeterPrediction':
+                    this.summaryData = res.data;
+                    break;
+                case 'ratioClock':
+                    this.summaryData = res.data;
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
+        this.websocketsend();
+        websocketonmessage((e) => {
+            console.log('e======', e);
+        });
+    },
+    mounted() {
+    // this.loadingrosepie('dayChart'); // 执行下面的函数
+        this.loadingbar('dayChart');
+    },
+    methods: {
+        websocketsend() {
+            // 查询组
+            sendSock({
+                iname: 'groupList',
+                id: 'groupList'
+            });
+            // 查询组所包含的站点
+            sendSock({
+                iname: 'groupStationList',
+                id: 'groupStationList',
+                gid: 4 // 必传
+            });
+            // 总能耗数据
+            sendSock({
+                iname: 'summary',
+                id: 'summary',
+                gid: '' // 非必传
+            });
+            // 近3天能耗数据
+            sendSock({
+                iname: 'threeDaysTrend',
+                id: 'threeDaysTrend',
+                gid: '' // 非必传
+            });
+            // 周能耗数据
+            sendSock({
+                iname: 'weekTrend',
+                id: 'weekTrend',
+                gid: '' // 非必传
+            });
+            // 月能耗数据
+            sendSock({
+                iname: 'monthTrend',
+                id: 'monthTrend',
+                gid: '' // 非必传
+            });
+            // 半年能耗数据
+            sendSock({
+                iname: 'halfYearTrend',
+                id: 'halfYearTrend',
+                gid: '' // 非必传
+            });
+            // 站点总览
+            sendSock({
+                iname: 'stationSummary',
+                id: 'stationSummary',
+                gid: '' // 非必传
+            });
+            // 能耗排名
+            sendSock({
+                iname: 'usageRank',
+                id: 'usageRank',
+                gid: '' // 非必传
+            });
+            // 能耗排名-用水量
+            sendSock({
+                iname: 'watermeterUsageRank',
+                id: 'watermeterUsageRank',
+                gid: '' // 非必传
+            });
+            // 能耗排名-用水量
+            sendSock({
+                iname: 'ammeterUsageRank',
+                id: 'ammeterUsageRank',
+                gid: '' // 非必传
+            });
+            // 水量预测
+            sendSock({
+                iname: 'wtmeterPrediction',
+                id: 'wtmeterPrediction',
+                gid: '' // 非必传
+            });
+            // 能耗值
+            sendSock({
+                iname: 'ratioClock',
+                id: 'ratioClock',
+                gid: '' // 非必传
+            });
         },
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "cross",
-            crossStyle: {
-              color: "#999"
-            }
-          }
-        },
-        toolbox: {
-          feature: {
-            dataView: {
-              show: true,
-              readOnly: false
-            },
-            magicType: {
-              show: true,
-              type: ["line", "bar"]
-            },
-            restore: {
-              show: true
-            },
-            saveAsImage: {
-              show: true
-            }
-          }
-        },
-        legend: {
-          data: ["订单量", "订单量1", "平均订单量"],
-          // y:275,
-          textStyle: {
-            color: "#fff" // legend字体颜色
-          }
-        },
-        xAxis: [
-          {
-            type: "category",
-            data: [
-              "京东自营",
-              "寰宇优行",
-              "不夜城",
-              "IGOLA",
-              "云商国际",
-              "海纳惠捷",
-              "陆淘国际",
-              "比邻特惠",
-              "畅游五洲",
-              "天泰国际",
-              "国航旗舰店"
-            ],
-            axisPointer: {
-              type: "shadow"
-            },
-            axisLabel: {
-              show: true,
-              interval: 0,
-              textStyle: {
-                color: "#fff",
-                fontSize: "12"
-              }
-            }
-          }
-        ],
-        yAxis: [
-          {
-            type: "value",
-            name: "订单量",
-            min: 0,
-            max: 250,
-            interval: 50,
-            axisLabel: {
-              show: true,
-              formatter: "{value} ",
-              textStyle: {
-                color: "#fff"
-              }
-            }
-          },
-          {
-            type: "value",
-            name: "平均订单量",
-            min: 0,
-            max: 25,
-            interval: 5,
-            axisLabel: {
-              formatter: "{value} ",
-              textStyle: {
-                color: "#fff"
-              }
-            }
-          },
-          {}
-        ],
-        series: [
-          {
-            name: "订单量",
-            type: "bar",
-            data: [
-              2.0,
-              4.9,
-              7.0,
-              23.2,
-              25.6,
-              76.7,
-              135.6,
-              162.2,
-              32.6,
-              20.0,
-              6.4
-            ]
-          },
-          {
-            name: "订单量1",
-            type: "bar",
-            data: [
-              2.6,
-              5.9,
-              9.0,
-              26.4,
-              28.7,
-              70.7,
-              175.6,
-              182.2,
-              48.7,
-              18.8,
-              6.0
-            ]
-          },
-          {
-            name: "平均订单量",
-            type: "line",
-            yAxisIndex: 1,
-            data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0]
-          }
-        ]
-      });
+        loadingbar(id, url) {
+            var myChart = this.$echarts.init(document.getElementById(id));
+            myChart.setOption({
+                title: {
+                    // text: '订单供应数量柱状图',
+                    // x: '60',
+                    textStyle: {
+                        color: '#ffffff',
+                        fontWeight: 'normal'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        dataView: {
+                            show: true,
+                            readOnly: false
+                        },
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                legend: {
+                    data: ['订单量', '订单量1', '平均订单量'],
+                    // y:275,
+                    textStyle: {
+                        color: '#fff' // legend字体颜色
+                    }
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: [
+                            '京东自营',
+                            '寰宇优行',
+                            '不夜城',
+                            'IGOLA',
+                            '云商国际',
+                            '海纳惠捷',
+                            '陆淘国际',
+                            '比邻特惠',
+                            '畅游五洲',
+                            '天泰国际',
+                            '国航旗舰店'
+                        ],
+                        axisPointer: {
+                            type: 'shadow'
+                        },
+                        axisLabel: {
+                            show: true,
+                            interval: 0,
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: '12'
+                            }
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '订单量',
+                        min: 0,
+                        max: 250,
+                        interval: 50,
+                        axisLabel: {
+                            show: true,
+                            formatter: '{value} ',
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '平均订单量',
+                        min: 0,
+                        max: 25,
+                        interval: 5,
+                        axisLabel: {
+                            formatter: '{value} ',
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    {}
+                ],
+                series: [
+                    {
+                        name: '订单量',
+                        type: 'bar',
+                        data: [
+                            2.0,
+                            4.9,
+                            7.0,
+                            23.2,
+                            25.6,
+                            76.7,
+                            135.6,
+                            162.2,
+                            32.6,
+                            20.0,
+                            6.4
+                        ]
+                    },
+                    {
+                        name: '订单量1',
+                        type: 'bar',
+                        data: [
+                            2.6,
+                            5.9,
+                            9.0,
+                            26.4,
+                            28.7,
+                            70.7,
+                            175.6,
+                            182.2,
+                            48.7,
+                            18.8,
+                            6.0
+                        ]
+                    },
+                    {
+                        name: '平均订单量',
+                        type: 'line',
+                        yAxisIndex: 1,
+                        data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0]
+                    }
+                ]
+            });
+        }
+    },
+    destroyed() {
+        this.socket.websocketclose();
     }
-  },
-  destroyed() {
-    this.socket.websocketclose();
-  }
 };
 </script>
 

@@ -153,7 +153,7 @@ export default {
         websocketonmessage((e) => {
             console.log('e======', e);
         });
-    },
+    },/*  */
     mounted() {
     // this.loadingrosepie('dayChart'); // 执行下面的函数
         this.loadingbar('dayChart');

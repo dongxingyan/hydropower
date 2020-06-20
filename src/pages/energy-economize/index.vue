@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="header">
-      <div class="header-date">2020年3月17日 星期二</div>
+      <div class="header-date">2020年6月20日 星期六</div>
       <div class="header-title">融自能耗数据</div>
     </div>
     <div class="content">
@@ -136,25 +136,79 @@
 </template>
 
 <script>
+import {initWebSocket, sendSock, websocketonmessage} from '../../api/websocket';
 import md5 from "blueimp-md5";
 export default {
   name: "index",
   data() {
     return {
-      msg: "this is energy-consumption page"
-    };
+            msg: 'this is energy-consumption page',
+            summaryData: '',
+            stationSummary: '',
+            threeDaysTrend: ''
+        };
   },
   created() {
-    this.socket.initWebSocket("ws://139.196.13.211:6900", data => {
-      console.log("data=====", data);
-    });
-
-    this.websocketsend();
-    this.websocketonmessage();
+    initWebSocket('ws://139.196.13.211:6900', (res) => {
+            res = JSON.parse(res);
+            if (res.code === 0 && res.data) {
+                switch (res.id) {
+                case 'groupList':
+                    this.summaryData = res.data;
+                    break;
+                case 'groupStationList':
+                    this.summaryData = res.data;
+                    break;
+                case 'summay':
+                    // 返回数据单位为吨与kw
+                    this.summaryData = res.data;
+                    break;
+                case 'threeDaysTrend':
+                    this.threeDaysTrend = res.data;
+                    console.log('res.data',res.data)
+                    break;
+                case 'weekTrend':
+                    this.summaryData = res.data;
+                    break;
+                case 'monthTrend':
+                    this.summaryData = res.data;
+                    break;
+                case 'halfYearTrend':
+                    this.summaryData = res.data;
+                    break;
+                case 'stationSummary':
+                    this.stationSummary = res.data;
+                    console.log('chart接口联调测试 · 语雀 v2.pdf====', this.stationSummary);
+                    break;
+                case 'usageRank':
+                    this.summaryData = res.data;
+                    break;
+                case 'WatermeterUsageRank':
+                    this.summaryData = res.data;
+                    break;
+                case 'ammeterUsageRank':
+                    this.summaryData = res.data;
+                    break;
+                case 'wtmeterPrediction':
+                    this.summaryData = res.data;
+                    break;
+                case 'ratioClock':
+                    this.summaryData = res.data;
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
+        this.websocketsend();
+        websocketonmessage((e) => {
+            console.log('e======', e);
+        });
   },
   mounted() {
     // this.loadingrosepie('dayChart'); // 执行下面的函数
-    this.loadingbar("dayChart");
+  setTimeout(()=>{
+      this.loadingbar("dayChart",true);
     this.loadingbar("weekChart");
     this.loadingbar("monthChart");
     this.loadingbar("yearChart");
@@ -163,29 +217,120 @@ export default {
     this.loadingbarRow("right4");
     this.loadingPie("right1");
     this.loadingZheX("right2");
+  },4000)
   },
   methods: {
     websocketsend() {
-      // 数据发送
-      let username = "guest";
-      let password = "123456";
-      let params = {
-        username: username,
-        password: md5(md5(password)),
-        itype: 0,
-        iname: "groupList"
-      };
-      this.socket.sendSock(JSON.stringify(params));
-    },
-    websocketonmessage() {
-      this.socket.websocketonmessage();
-    },
-    loadingbar(id, url) {
-      var myChart = this.$echarts.init(document.getElementById(id));
+            // 查询组
+            sendSock({
+                iname: 'groupList',
+                id: 'groupList'
+            });
+            // 查询组所包含的站点
+            sendSock({
+                iname: 'groupStationList',
+                id: 'groupStationList',
+                gid: 4 // 必传
+            });
+            // 总能耗数据
+            sendSock({
+                iname: 'summary',
+                id: 'summary',
+                gid: '' // 非必传
+            });
+            // 近3天能耗数据
+            sendSock({
+                iname: 'threeDaysTrend',
+                id: 'threeDaysTrend',
+                gid: '' // 非必传
+            });
+            // 周能耗数据
+            sendSock({
+                iname: 'weekTrend',
+                id: 'weekTrend',
+                gid: '' // 非必传
+            });
+            // 月能耗数据
+            sendSock({
+                iname: 'monthTrend',
+                id: 'monthTrend',
+                gid: '' // 非必传
+            });
+            // 半年能耗数据
+            sendSock({
+                iname: 'halfYearTrend',
+                id: 'halfYearTrend',
+                gid: '' // 非必传
+            });
+            // 站点总览
+            sendSock({
+                iname: 'stationSummary',
+                id: 'stationSummary',
+                gid: '' // 非必传
+            });
+            // 能耗排名
+            sendSock({
+                iname: 'usageRank',
+                id: 'usageRank',
+                gid: '' // 非必传
+            });
+            // 能耗排名-用水量
+            sendSock({
+                iname: 'watermeterUsageRank',
+                id: 'watermeterUsageRank',
+                gid: '' // 非必传
+            });
+            // 能耗排名-用水量
+            sendSock({
+                iname: 'ammeterUsageRank',
+                id: 'ammeterUsageRank',
+                gid: '' // 非必传
+            });
+            // 水量预测
+            sendSock({
+                iname: 'wtmeterPrediction',
+                id: 'wtmeterPrediction',
+                gid: '' // 非必传
+            });
+            // 能耗值
+            sendSock({
+                iname: 'ratioClock',
+                id: 'ratioClock',
+                gid: '' // 非必传
+            });
+        },
+    loadingbar(id, type) {
+        console.log('threeDaysTrend',this.threeDaysTrend)
+        let data = this.threeDaysTrend;
+        let currentAmmeter =[];//用电量
+        let lastAmmeter=[];
+        let currentWtmeter=[];//用水量
+        let lastWtmeter=[];
+        let currentRatio=[];//能耗比
+        let lastRatio=[];
+        let currentFee=[];
+        let lastFee=[];
+        let time = data.time
+        data.current.forEach((item,index)=>{
+              currentAmmeter.push(item.ammeter);
+              currentWtmeter.push(item.wtmeter)
+              currentRatio.push(item.ratio)
+              currentFee.push(item.fee)
+
+        })
+        data.lastYear.forEach((item,index)=>{
+              lastAmmeter.push(item.ammeter)
+              lastWtmeter.push(item.wtmeter)
+              lastRatio.push(item.ratio)
+              lastFee.push(item.fee)
+        })
+      // console.log('threeDaysTrend',threeDaysTrend)
+      if(type){
+ var myChart = this.$echarts.init(document.getElementById(id));
       myChart.setOption(
         {
           title: {
-            // text: '订单供应数量柱状图',
+            // text: '订单供应数量柱状图',    
             // x: '60',
             textStyle: {
               color: "#3496f9",
@@ -201,27 +346,15 @@ export default {
               }
             }
           },
-          toolbox: {
-            feature: {
-              dataView: {
-                show: true,
-                readOnly: false
-              },
-              magicType: {
-                show: true,
-                type: ["line", "bar"]
-              },
-              restore: {
-                show: true
-              },
-              saveAsImage: {
-                show: true
-              }
-            }
-          },
-          color: ["blue", "yellow", "red","red"],
+          grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true
+        },
+          color: ["#2B56FB", "#FFF100", "#E50112","#E50112"],
           legend: {
-            data: ["用水量", "用电量","去年同期(水)","去年同期(电)", "平均订单量"],
+            data: ["用水量", "用电量","去年同期", "能耗比(今年)","能耗比(去年)"],
             // y:275,
             textStyle: {
               color: "#6c7db1" // legend字体颜色
@@ -229,8 +362,13 @@ export default {
           },
           xAxis: [
             {
+               splitLine:{
+　　　　       show:false,
+               color:'red'
+　　              },
               type: "category",
-              data: ["1月", "2月", "3月", "4月", "5月", "6月"],
+              // data: ["6月20日", "6月21日", "6月22日"],
+              data: time,
               axisPointer: {
                 type: "shadow"
               },
@@ -246,13 +384,18 @@ export default {
           ],
           yAxis: [
             {
+               splitLine:{
+　　　　       show:false,
+              color:'red'
+　　              },
               type: "value",
-              name: "能耗量",
+              name: "用水量(t)",
               min: 0,
               // max: 250,
               interval: 50,
+              color: "#3496f9",
               axisLabel: {
-                show: true,
+                show: false,
                 formatter: "{value} ",
                 textStyle: {
                   color: "#3496f9"
@@ -260,8 +403,12 @@ export default {
               }
             },
             {
+               splitLine:{
+　　　　       show:false,
+              color:'red'
+　　              },  
               type: "value",
-              name: "周水量",
+              name: "用电量(kw)",
               min: 0,
               // max: 25,
               interval: 5,
@@ -277,42 +424,57 @@ export default {
             {
               name: "用水量",
               type: "bar",
-              data: [2.0, 4.9, 7.0, 3.2, 5.6, 6.7],
+              // data: [6.0, 4.9, 7.0],
+              data: currentWtmeter,
               stack:'用水量堆叠'
             },
              
-            {
+            {/*  */
               name: "用电量",
               type: "bar",
-              data: [2.6, 5.9, 9.0, 6.4, 8.7, 7],
+              // data: [5.6, 5.9, 9.0],
+              data: currentAmmeter,
               stack:'用电量堆叠'
             },
               {
               // barGap: "-100%",
-              name: "去年同期(水)",
+              name: "去年同期",
               type: "bar",
-              data: [1.0, 3.9, 6.0, 2.2, 6.6, 5.7],
+              // data: [2.0, 3.9, 6.0],
+              data: lastWtmeter,
               stack:'用水量堆叠'
                   //  z:3,       
                 // xAxisIndex:1,
             },
              {
               // barGap: "-100%",
-              name: "去年同期(电)",
+              name: "去年同期",
               type: "bar",
-              data: [1.0, 2.9, 7.0, 2.2, 6.6, 5.7],
+              // data: [1.0, 2.9, 7.0],
+              data: lastAmmeter,
               stack:'用电量堆叠'
             },
             {
-              name: "平均订单量",
+              name: "能耗比(今年)",
               type: "line",
               yAxisIndex: 1,
-              data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2]
+              // data: [2.0, 2.2, 3.3]
+              data: currentRatio
+            },
+            {
+              // name: "用电量(kw)",
+              name: "能耗比(去年)",
+              type: "line",
+              yAxisIndex: 1,
+              // data: [4.0, 3.2, 5.3],
+              data: lastRatio
             }
           ]
         },
         true
       );
+      }
+     
     },
     loadingbarRow(id, url) {
       var myChart = this.$echarts.init(document.getElementById(id));
@@ -518,7 +680,7 @@ export default {
   },
 
   destroyed() {
-    this.socket.websocketclose();
+    // this.socket.websocketclose();
   }
 };
 </script>
@@ -557,6 +719,7 @@ export default {
       border: 1px solid #5e8cd9;
       .item-header {
         display: flex;
+        margin-bottom:12px;
         .mark-icon {
           width: 20px;
           height: 20px;

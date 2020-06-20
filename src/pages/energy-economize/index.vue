@@ -219,9 +219,9 @@ export default {
               }
             }
           },
-          color: ["blue", "yellow", "#3496f9"],
+          color: ["blue", "yellow", "red","red"],
           legend: {
-            data: ["订单量", "订单量1", "平均订单量"],
+            data: ["用水量", "用电量","去年同期(水)","去年同期(电)", "平均订单量"],
             // y:275,
             textStyle: {
               color: "#6c7db1" // legend字体颜色
@@ -275,14 +275,33 @@ export default {
           ],
           series: [
             {
-              name: "订单量",
+              name: "用水量",
               type: "bar",
-              data: [2.0, 4.9, 7.0, 3.2, 5.6, 6.7]
+              data: [2.0, 4.9, 7.0, 3.2, 5.6, 6.7],
+              stack:'用水量堆叠'
             },
+             
             {
-              name: "订单量1",
+              name: "用电量",
               type: "bar",
-              data: [2.6, 5.9, 9.0, 6.4, 8.7, 7]
+              data: [2.6, 5.9, 9.0, 6.4, 8.7, 7],
+              stack:'用电量堆叠'
+            },
+              {
+              // barGap: "-100%",
+              name: "去年同期(水)",
+              type: "bar",
+              data: [1.0, 3.9, 6.0, 2.2, 6.6, 5.7],
+              stack:'用水量堆叠'
+                  //  z:3,       
+                // xAxisIndex:1,
+            },
+             {
+              // barGap: "-100%",
+              name: "去年同期(电)",
+              type: "bar",
+              data: [1.0, 2.9, 7.0, 2.2, 6.6, 5.7],
+              stack:'用电量堆叠'
             },
             {
               name: "平均订单量",
